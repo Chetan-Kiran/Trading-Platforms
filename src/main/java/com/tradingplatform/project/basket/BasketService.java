@@ -174,30 +174,52 @@ public void removeAsset(
 
 public BasketValuationDTO getBasketValuation(Long basketId){
 
-    Basket basket = basketRepository.findById(basketId).orElseThrow();
+    Basket basket =
+        basketRepository
+            .findById(basketId)
+            .orElseThrow();
 
-    List<String> holdings = new ArrayList<>();
+    List<String> holdings =
+        new ArrayList<>();
 
-    double total=0;
+    double total = 0;
 
     for(BasketAsset relation : basket.getAssets()){
 
-        Asset asset = relation.getAsset();
+        Asset asset =
+            relation.getAsset();
 
-        holdings.add(
+        try{
 
-            asset.getSymbol()
-            + " : $"
-            + asset.getPrice()
-        );
+            double livePrice =
+                marketPriceService
+                    .getPrice(
+                        asset.getSymbol()
+                    );
 
-        double price = marketPriceService.getPrice(asset.getSymbol());
-        total += price;
-        
+            holdings.add(
+                asset.getSymbol()
+                + " : $"
+                + livePrice
+            );
+
+            total += livePrice;
+
+        }catch(Exception e){
+
+            System.out.println(
+                "Failed to fetch price for "
+                + asset.getSymbol()
+            );
+
+            holdings.add(
+                asset.getSymbol()
+                + " : PRICE_UNAVAILABLE"
+            );
+        }
     }
 
     return new BasketValuationDTO(
-
         basket.getId(),
         basket.getName(),
         holdings,
