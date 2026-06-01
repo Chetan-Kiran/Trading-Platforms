@@ -1,3 +1,4 @@
+```
 com.tradingplatform
 
 ├── config
@@ -57,7 +58,7 @@ com.tradingplatform
 ├── repository
 │
 └── entity
-
+```
 
 
 Perfect. Final requirements locked:
