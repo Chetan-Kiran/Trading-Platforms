@@ -1,6 +1,7 @@
 package com.tradingplatform.project.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="basket_assets")
@@ -13,6 +14,8 @@ public class BasketAsset {
 
     @ManyToOne
     @JoinColumn(name="basket_id")
+
+    @JsonIgnore
     private Basket basket;
 
     @ManyToOne
@@ -31,9 +34,7 @@ public class BasketAsset {
         return basket;
     }
 
-    public void setBasket(
-        Basket basket
-    ) {
+    public void setBasket(Basket basket) {
         this.basket=basket;
     }
 
@@ -41,9 +42,7 @@ public class BasketAsset {
         return asset;
     }
 
-    public void setAsset(
-        Asset asset
-    ) {
+    public void setAsset(Asset asset) {
         this.asset=asset;
     }
 }

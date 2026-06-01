@@ -1,8 +1,12 @@
 package com.tradingplatform.project.basket;
 
 import org.springframework.stereotype.Service;
+import java.util.*;
 
+import com.tradingplatform.project.market.MarketPriceService;
 import com.tradingplatform.project.entity.User;
+import com.tradingplatform.project.market.dto.BasketResponseDTO;
+import com.tradingplatform.project.market.dto.BasketValuationDTO;
 import com.tradingplatform.project.entity.Asset;
 import com.tradingplatform.project.entity.Basket;
 import com.tradingplatform.project.entity.BasketAsset;
@@ -17,13 +21,14 @@ public class BasketService {
     private final UserRepository userRepository;
     private final AssetRepository assetRepository;
     private final BasketAssetRepository basketAssetRepository;
+    private final MarketPriceService marketPriceService;
 
     public BasketService(
     BasketRepository basketRepository,
     UserRepository userRepository,
     AssetRepository assetRepository,
-    BasketAssetRepository
-    basketAssetRepository){
+    BasketAssetRepository basketAssetRepository,
+    MarketPriceService marketPriceService){
 
     this.basketRepository = basketRepository;
 
@@ -32,6 +37,8 @@ public class BasketService {
     this.assetRepository = assetRepository;
 
     this.basketAssetRepository = basketAssetRepository;
+
+    this.marketPriceService = marketPriceService;
     }
 
     public Basket createBasket(Long userId,String basketName){
@@ -63,41 +70,138 @@ public class BasketService {
     return saved;
 }
 
-    public void addAsset(Long basketId,Long assetId) {
+    public void addAsset(
+        Long basketId,
+        Long assetId
+) {
 
     Basket basket =
         basketRepository
         .findById(basketId)
         .orElseThrow(
-            () ->new RuntimeException("Basket not found")
+            ()->new RuntimeException(
+                "Basket not found"
+            )
         );
 
     Asset asset =
         assetRepository
         .findById(assetId)
-        .orElseThrow();
+        .orElseThrow(
+            ()->new RuntimeException(
+                "Asset not found"
+            )
+        );
+
+    Optional<BasketAsset> existing =
+        basketAssetRepository
+        .findByBasketIdAndAssetId(
+            basketId,
+            assetId
+        );
+
+    if(existing.isPresent()){
+
+        throw new RuntimeException(
+            "Asset already exists in basket"
+        );
+
+    }
 
     BasketAsset relation =
         new BasketAsset();
 
-    relation.setBasket(
-        basket
+    relation.setBasket(basket);
+
+    relation.setAsset(asset);
+
+    basketAssetRepository.save(
+        relation
     );
-
-    relation.setAsset(
-        asset
-    );
-
-    basketAssetRepository
-        .save(relation);
-
 }
 
-public Basket getBasket(Long basketId) {
+public BasketResponseDTO getBasket(
+        Long basketId
+){
 
-    return basketRepository
+    Basket basket =
+        basketRepository
         .findById(basketId)
         .orElseThrow();
 
+    List<String> assetNames =
+        basket.getAssets()
+        .stream()
+        .map(
+            relation ->
+                relation
+                .getAsset()
+                .getSymbol()
+        )
+        .toList();
+
+    return new BasketResponseDTO(
+
+        basket.getId(),
+
+        basket.getName(),
+
+        assetNames
+    );
+}
+
+public void removeAsset(
+        Long basketId,
+        Long assetId
+) {
+
+    BasketAsset relation =
+        basketAssetRepository
+        .findByBasketIdAndAssetId(
+            basketId,
+            assetId
+        )
+        .orElseThrow(
+            () -> new RuntimeException(
+                "Asset not found in basket"
+            )
+        );
+
+    basketAssetRepository.delete(
+        relation
+    );
+}
+
+public BasketValuationDTO getBasketValuation(Long basketId){
+
+    Basket basket = basketRepository.findById(basketId).orElseThrow();
+
+    List<String> holdings = new ArrayList<>();
+
+    double total=0;
+
+    for(BasketAsset relation : basket.getAssets()){
+
+        Asset asset = relation.getAsset();
+
+        holdings.add(
+
+            asset.getSymbol()
+            + " : $"
+            + asset.getPrice()
+        );
+
+        double price = marketPriceService.getPrice(asset.getSymbol());
+        total += price;
+        
+    }
+
+    return new BasketValuationDTO(
+
+        basket.getId(),
+        basket.getName(),
+        holdings,
+        total
+    );
 }
 }

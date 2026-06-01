@@ -17,6 +17,16 @@ public class Asset {
 
     private String market;
 
+    private Double price;
+
+    public Double getPrice(){
+        return price;
+    }
+
+    public void setPrice(Double price){
+        this.price = price;
+    }
+
     public Long getId() {
         return id;
     }

@@ -158,3 +158,5 @@ If you're good with that structure, I'll immediately start **Part-1: Full Archit
 
 
 Phase-2 → Backtesting + Paper Trading + Automation Engine.
+
+ \connect root@localhost

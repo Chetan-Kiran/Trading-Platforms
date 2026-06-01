@@ -22,14 +22,6 @@ public class Basket {
     @JoinColumn(name="user_id")
     private User user;
 
-    @ManyToOne
-@JoinColumn(name="basket_id")
-private Basket basket;
-
-@ManyToOne
-@JoinColumn(name="asset_id")
-private Asset asset;
-
     public Long getId() {
         return id;
     }
@@ -58,4 +50,10 @@ private Asset asset;
         this.user=user;
     }
 
+    public List<BasketAsset> getAssets(){
+        return assets;
+    }
+    public void setAssets(List<BasketAsset> assets){
+        this.assets = assets;
+    }
 }
