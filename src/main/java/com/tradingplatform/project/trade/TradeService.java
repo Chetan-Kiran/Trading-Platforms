@@ -41,58 +41,85 @@ public class TradeService {
         this.marketPriceService= marketPriceService;
     }
 
-    public Trade buy(TradeRequestDTO dto){
+    public Trade buy(
+    TradeRequestDTO dto,
+    double livePrice
+){
 
-        User user =userRepository.findById(dto.getUserId())
+    User user =
+        userRepository
+            .findById(
+                dto.getUserId()
+            )
             .orElseThrow(
-                ()->new RuntimeException(
-                    "User not found"
-                )
+                () ->
+                    new RuntimeException(
+                        "User not found"
+                    )
             );
 
-        Asset asset =
-            assetRepository
+    Asset asset =
+        assetRepository
             .findById(
                 dto.getAssetId()
             )
             .orElseThrow(
-                ()->new RuntimeException(
-                    "Asset not found"
-                )
+                () ->
+                    new RuntimeException(
+                        "Asset not found"
+                    )
             );
 
-        double livePrice =
-            marketPriceService
+    Trade trade =
+        new Trade();
+
+    trade.setUser(user);
+
+    trade.setAsset(asset);
+
+    trade.setQuantity(
+        dto.getQuantity()
+    );
+
+    trade.setPrice(
+        livePrice
+    );
+
+    trade.setType(
+        "BUY"
+    );
+
+    trade.setTimestamp(
+        LocalDateTime.now()
+    );
+
+    return tradeRepository
+        .save(trade);
+}
+
+    public Trade buy(
+    TradeRequestDTO dto
+){
+
+    Asset asset =
+        assetRepository
+            .findById(
+                dto.getAssetId()
+            )
+            .orElseThrow();
+
+    double livePrice =
+
+        marketPriceService
             .getPrice(
                 asset.getSymbol()
             );
 
-        Trade trade =
-            new Trade();
-
-        trade.setUser(user);
-
-        trade.setAsset(asset);
-
-        trade.setQuantity(
-            dto.getQuantity()
-        );
-
-        trade.setPrice(
-            livePrice
-        );
-
-        trade.setType(
-            "BUY"
-        );
-
-        trade.setTimestamp(
-            LocalDateTime.now()
-        );
-
-        return tradeRepository
-            .save(trade);
-    }
+    return buy(
+        dto,
+        livePrice
+    );
+}
 
     public Trade sell(
         TradeRequestDTO dto

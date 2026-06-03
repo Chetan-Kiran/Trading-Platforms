@@ -1,8 +1,8 @@
 package com.tradingplatform.project.market;
 
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -11,9 +11,17 @@ public class MarketPriceService {
     @Autowired
     private RestTemplate restTemplate;
 
-    private final String API_KEY = "YOUR_KEY";
+    private final String API_KEY =
+        "JQP7X52DHIF8C9KJ";
 
-    public double getPrice(String symbol) {
+    public double getPrice(
+        String symbol
+    ){
+
+        System.out.println(
+            "Fetching price for : "
+            + symbol
+        );
 
         String url =
             "https://www.alphavantage.co/query"
@@ -21,7 +29,9 @@ public class MarketPriceService {
             + "&symbol=" + symbol
             + "&apikey=" + API_KEY;
 
-        ResponseEntity<AlphaResponse> response =
+        ResponseEntity<AlphaResponse>
+            response =
+
             restTemplate.getForEntity(
                 url,
                 AlphaResponse.class
@@ -30,6 +40,11 @@ public class MarketPriceService {
         AlphaResponse body =
             response.getBody();
 
+        System.out.println(
+            "API RESPONSE : "
+            + body
+        );
+
         if(body == null){
 
             throw new RuntimeException(
@@ -37,7 +52,10 @@ public class MarketPriceService {
             );
         }
 
-        if(body.getGlobalQuote() == null){
+        if(
+            body.getGlobalQuote()
+            == null
+        ){
 
             throw new RuntimeException(
                 "No quote returned for symbol: "
@@ -45,17 +63,19 @@ public class MarketPriceService {
             );
         }
 
-        Double price = body.getGlobalQuote().getPrice();
+        Double price =
+            body
+                .getGlobalQuote()
+                .getPrice();
 
-        if (price == null) {
+        if(price == null){
+
             throw new RuntimeException(
                 "No price available for: "
                 + symbol
             );
         }
 
-        System.out.println(response.getBody());
-        
-        return price.doubleValue();
+        return price;
     }
 }
