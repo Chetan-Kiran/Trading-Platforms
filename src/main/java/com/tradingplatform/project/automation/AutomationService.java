@@ -56,18 +56,13 @@ public class AutomationService {
 
         List<AutomationRule>
             rules =
-            repo.findAll();
+            repo.findByActiveTrue();
 
-        StringBuilder result =
-            new StringBuilder();
+        StringBuilder result = new StringBuilder();
 
         for(AutomationRule rule : rules){
             try{
-                double price =
-                    market
-                        .getPrice(
-                            rule.getSymbol()
-                        );
+                double price =market.getPrice(rule.getSymbol());
 
                 boolean matched =
                     rule.getConditionType()
@@ -76,34 +71,21 @@ public class AutomationService {
                     price < rule.getThreshold();
 
                 if(matched){
-                    System.out.println(
-                        "RULE MATCHED : "
-                        + rule.getSymbol()
-                    );
+                    System.out.println("RULE MATCHED : "+ rule.getSymbol());
 
-                    Asset asset =
-                        assetRepository
-                            .findBySymbol(
-                                rule.getSymbol()
-                            )
-                            .orElseThrow();
+                    Asset asset = assetRepository.findBySymbol(rule.getSymbol()).orElseThrow();
 
-                    TradeRequestDTO dto =
-                        new TradeRequestDTO();
+                    TradeRequestDTO dto = new TradeRequestDTO();
 
-                    dto.setUserId(
-                        rule.getUserId()
-                    );
+                    dto.setUserId(rule.getUserId());
 
-                    dto.setAssetId(
-                        asset.getId()
-                    );
+                    dto.setAssetId(asset.getId());
 
-                    dto.setQuantity(
-                        rule.getQuantity()
-                    );
+                    dto.setQuantity(rule.getQuantity());
 
                     tradeService.buy(dto, price);
+                    rule.setActive(false);
+                    repo.save(rule);
 
                     System.out.println(
                         "AUTO BUY EXECUTED : "

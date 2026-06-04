@@ -22,6 +22,8 @@ public class AutomationRule {
 
     private int quantity;
 
+    private boolean active = true;
+
     // Default Constructor (Required by JPA)
     public AutomationRule() {
     }
@@ -91,5 +93,13 @@ public class AutomationRule {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
