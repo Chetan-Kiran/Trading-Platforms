@@ -1,0 +1,526 @@
+Your project is actually in a **pretty solid state now**.
+
+Current condition:
+
+# What you already built ✅
+
+```text
+Users/Auth basic
+Assets
+Live Market API
+Trade BUY / SELL
+Transactions
+Portfolio endpoint
+Automation rules
+Scheduler
+Auto execution
+```
+
+You already crossed **"CRUD trading app"** stage.
+
+Your automation now:
+
+```text
+IF AAPL < 320
+THEN BUY 2
+```
+
+works.
+
+That is a real mini algo engine.
+
+---
+
+About portfolio:
+
+You got:
+
+```json
+[
+ {
+   "symbol":"AAPL",
+   "quantity":42,
+   "avgPrice":309.86,
+   "currentPrice":306.31,
+   "pnl":-149.50
+ }
+]
+```
+
+This is **fine for V1**.
+
+Not wrong.
+
+My earlier output was **Phase-2 richer analytics**.
+
+You currently have:
+
+✅ holdings
+
+✅ avg cost
+
+✅ live price
+
+✅ total pnl
+
+Good enough.
+
+Later you can split:
+
+```text
+realizedPnL
+unrealizedPnL
+totalPnL
+```
+
+No urgency.
+
+---
+
+Now your real question:
+
+> what's next? basket automation? strategies? paper trading?
+
+Short answer:
+
+**YES — but in order.**
+
+---
+
+# Recommended roadmap for YOUR exact project
+
+## Stage A — Improve Automation Engine (NEXT)
+
+You already have **single-stock automation**.
+
+Now make automation smarter.
+
+### 1) Cooldown / Duplicate Prevention
+
+Current problem:
+
+```text
+Scheduler
+↓
+
+AAPL<320
+
+BUY
+BUY
+BUY
+BUY
+```
+
+Need:
+
+```text
+BUY once
+
+wait 30 min
+
+allow next trigger
+```
+
+Add fields:
+
+```java
+private boolean active=true;
+
+private LocalDateTime lastExecutedAt;
+
+private Integer cooldownMinutes;
+```
+
+Rule logic:
+
+```text
+trigger?
+
+YES
+
+cooldown expired?
+
+YES → execute
+
+NO → skip
+```
+
+This is the most important next improvement.
+
+---
+
+## Stage B — Basket Automation
+
+This is exactly what you asked.
+
+Current:
+
+```text
+1 rule = 1 stock
+```
+
+Need:
+
+```text
+Basket:
+Tech Basket
+
+AAPL
+MSFT
+NVDA
+GOOG
+```
+
+Structure:
+
+```text
+basket
+├── Basket.java
+├── BasketItem.java
+├── BasketService.java
+```
+
+Entities:
+
+```java
+Basket
+{
+    id
+    userId
+    name
+}
+```
+
+```java
+BasketItem
+{
+    basketId
+    symbol
+    weight
+}
+```
+
+Rule example:
+
+```text
+IF TECH_BASKET drops 5%
+
+BUY entire basket
+```
+
+Execution:
+
+```text
+BUY AAPL 30%
+BUY MSFT 30%
+BUY NVDA 20%
+BUY GOOG 20%
+```
+
+Now you're entering **ETF-style trading / robo advisor territory.**
+
+This is a strong project feature.
+
+---
+
+## Stage C — Strategy System
+
+After automation.
+
+Current automation:
+
+```text
+IF price<320
+BUY
+```
+
+Strategies are different.
+
+They make decisions from logic.
+
+Example:
+
+```text
+RSI<30
+
+AND
+
+Price > EMA200
+
+→ BUY
+```
+
+Structure:
+
+```text
+strategy
+├── TradingStrategy
+├── RSIStrategy
+├── TrendStrategy
+├── MeanReversionStrategy
+```
+
+Interface:
+
+```java
+public interface TradingStrategy {
+
+    TradeSignal evaluate(
+        MarketState state
+    );
+
+}
+```
+
+Example:
+
+```text
+TrendStrategy
+
+↓
+
+BUY
+SELL
+HOLD
+```
+
+This is where your app becomes **algorithmic trading software**.
+
+---
+
+## Stage D — Paper Trading
+
+You asked about paper trading.
+
+You are actually **70% there already**.
+
+Because your trades already do:
+
+```text
+DB write only
+```
+
+No broker.
+
+That is basically paper trading.
+
+Formalize it.
+
+Create:
+
+```text
+wallet
+├── Wallet.java
+├── WalletService.java
+```
+
+Fields:
+
+```java
+balance=100000
+```
+
+BUY logic:
+
+Before:
+
+```text
+always buy
+```
+
+After:
+
+```text
+requiredCost =
+price * quantity
+
+wallet >= requiredCost ?
+
+YES → allow
+
+NO → reject
+```
+
+SELL:
+
+```text
+wallet += proceeds
+```
+
+Now you have a proper paper trading simulator.
+
+---
+
+## Stage E — Indicators
+
+Needed for strategies.
+
+Package:
+
+```text
+indicators
+```
+
+Implement:
+
+```text
+RSI
+EMA
+MACD
+VWAP
+ATR
+```
+
+Example:
+
+```java
+double rsi =
+    rsiService.calculate(
+        candles
+    );
+```
+
+Then strategies use them.
+
+---
+
+## Stage F — Historical + Backtesting
+
+After strategies.
+
+Flow:
+
+```text
+historical data
+↓
+
+strategy
+
+↓
+
+simulated trades
+
+↓
+
+PnL report
+```
+
+Package:
+
+```text
+backtesting
+```
+
+Now you can answer:
+
+> Would my strategy have worked last year?
+
+Very strong project feature.
+
+---
+
+## Stage G — Broker Abstraction
+
+Later.
+
+Interfaces:
+
+```java
+BrokerProvider
+```
+
+Implementations:
+
+```text
+PaperBroker
+UpstoxBroker
+ZerodhaBroker
+AlpacaBroker
+```
+
+Then:
+
+```text
+paper mode
+
+OR
+
+real broker mode
+```
+
+---
+
+## Stage H — Frontend Dashboard
+
+React.
+
+Charts.
+
+Live positions.
+
+Rule creation UI.
+
+Portfolio view.
+
+---
+
+## My recommendation for YOUR immediate next move
+
+Do this exact order:
+
+```text
+1. Automation Cooldown
+2. Wallet / Paper Trading
+3. Basket Automation
+4. Strategy Engine
+5. Indicators
+6. Backtesting
+7. Broker Layer
+8. React Dashboard
+```
+
+Why?
+
+Because:
+
+```text
+Cooldown
+↓
+
+safe automation
+
+Wallet
+↓
+
+realistic execution
+
+Basket
+↓
+
+multi-stock execution
+
+Strategy
+↓
+
+intelligence layer
+```
+
+---
+
+My opinion on your project status:
+
+You're no longer building a simple Spring Boot demo.
+
+You're moving toward:
+
+```text
+Algorithmic Trading Platform
++
+Portfolio Analytics
++
+Paper Trading Engine
++
+Automation System
+```
+
+That's a strong resume / portfolio project if you keep the architecture clean.

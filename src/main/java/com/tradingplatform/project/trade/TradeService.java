@@ -1,5 +1,6 @@
 package com.tradingplatform.project.trade;
 
+
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -14,6 +15,7 @@ import com.tradingplatform.project.repository.TradeRepository;
 import com.tradingplatform.project.repository.UserRepository;
 import com.tradingplatform.project.trade.dto.PortfolioDTO;
 import com.tradingplatform.project.trade.dto.TradeRequestDTO;
+import com.tradingplatform.project.wallet.WalletService;
 
 @Service
 public class TradeService {
@@ -23,22 +25,24 @@ public class TradeService {
     
     private final AssetRepository assetRepository;
     private final MarketPriceService marketPriceService;
-    
+    private final WalletService walletService;
 
     public TradeService(
         TradeRepository tradeRepository,
         UserRepository userRepository,
         AssetRepository assetRepository,
-        MarketPriceService marketPriceService
+        MarketPriceService marketPriceService, 
+        WalletService walletService
     ){
-
+        
         this.tradeRepository= tradeRepository;
-
+        
         this.userRepository= userRepository;
-
+        
         this.assetRepository= assetRepository;
-
+        
         this.marketPriceService= marketPriceService;
+        this.walletService = walletService;
     }
 
     public Trade buy(
@@ -92,6 +96,9 @@ public class TradeService {
     trade.setTimestamp(
         LocalDateTime.now()
     );
+
+    double cost = livePrice * dto.getQuantity();
+    walletService.debit(user.getId(), cost);
 
     return tradeRepository
         .save(trade);
@@ -193,6 +200,12 @@ public class TradeService {
     trade.setTimestamp(
         LocalDateTime.now()
     );
+
+    double proceeds =
+    livePrice
+    * dto.getQuantity();
+
+    walletService.credit(user.getId(),proceeds);
 
     return tradeRepository
         .save(trade);
