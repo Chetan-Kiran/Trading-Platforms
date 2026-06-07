@@ -161,3 +161,42 @@ If you're good with that structure, I'll immediately start **Part-1: Full Archit
 Phase-2 → Backtesting + Paper Trading + Automation Engine.
 
  \connect root@localhost
+
+
+
+
+```AUTH
+POST /auth/login
+
+TRADING
+POST /trade/buy
+POST /trade/sell
+GET  /trade/portfolio
+GET  /trade/transactions/{userId}
+
+ASSETS
+GET  /asset
+
+WALLET
+GET  /wallet/{userId}
+
+BASKETS
+POST   /basket
+POST   /basket/{basketId}/asset
+DELETE /basket/{basketId}/asset
+POST   /basket/{basketId}/asset-rule
+GET    /basket/{basketId}
+GET    /basket/{basketId}/valuation
+GET    /basket/price
+
+AUTOMATION
+POST /automation/rule
+POST /automation/run
+GET  /automation/rules
+
+BASKET AUTOMATION
+POST /basket-automation/{basketId}/run
+
+BACKTEST
+GET /backtest
+```

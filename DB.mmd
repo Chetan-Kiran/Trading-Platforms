@@ -1,0 +1,52 @@
+erDiagram
+    USER ||--o{ TRADE : executes
+    USER ||--o{ WALLET : owns
+    USER ||--o{ BASKET : creates
+    USER ||--o{ AUTOMATION_RULE : defines
+    USER ||--o{ POSITION : holds
+
+    ASSET ||--o{ TRADE : "is traded"
+    ASSET ||--o{ BASKET_ASSET : "belongs to"
+    ASSET ||--o{ POSITION : "tracks"
+    ASSET ||--o{ PRICE_HISTORY : "has record"
+
+    BASKET ||--o{ BASKET_ASSET : contains
+
+    USER {
+        bigint id PK
+        string email
+        string password
+        string role
+    }
+
+    TRADE {
+        bigint id PK
+        bigint user_id FK
+        bigint asset_id FK
+        decimal quantity
+        decimal price
+        string side
+        timestamp created_at
+    }
+
+    WALLET {
+        bigint id PK
+        bigint user_id FK
+        decimal balance
+        string currency
+    }
+
+    BASKET {
+        bigint id PK
+        bigint user_id FK
+        string name
+    }
+
+    AUTOMATION_RULE {
+        bigint id PK
+        bigint user_id FK
+        string symbol
+        string condition_type
+        decimal target_value
+        string status
+    }

@@ -1,0 +1,108 @@
+graph TD
+
+    subgraph Client_Layer [Client & Security Layer]
+        User[User / Frontend]
+        JwtFilter[JwtFilter]
+        JwtUtil[JwtUtil]
+        SecurityConfig[SecurityConfig]
+    end
+
+    subgraph Auth_Module [Auth Module]
+        AuthController[AuthController]
+        PasswordEncoder[PasswordEncoder]
+        UserRepository[UserRepository]
+    end
+
+    subgraph Trading_Portfolio [Trading & Portfolio Engine]
+        TradeController[TradeController]
+        TradeService[TradeService]
+        TradeRepository[TradeRepository]
+        PortfolioDTO[PortfolioDTO<br/>* symbol<br/>* quantity<br/>* avgPrice<br/>* currentPrice<br/>* PnL]
+    end
+
+    subgraph Wallet_Basket [Wallet & Basket Modules]
+        WalletController[WalletController]
+        WalletService[WalletService]
+        WalletRepository[WalletRepository]
+        BasketController[BasketController]
+        BasketAutomationService[BasketAutomationService]
+        BasketRepository[BasketRepository]
+        BasketAssetRepository[BasketAssetRepository]
+    end
+
+    subgraph Automation_Indicators [Automation & Indicators]
+        AutomationController[AutomationController]
+        AutomationService[AutomationService]
+        AutomationScheduler[AutomationScheduler]
+        RuleEvaluator[RuleEvaluator]
+        RSIIndicator[RSIIndicator]
+        EMAIndicator[EMAIndicator]
+        PositionMonitorService[PositionMonitorService]
+    end
+
+    subgraph Data_Market [Market Data & History]
+        MarketPriceService[MarketPriceService]
+        PriceHistoryService[PriceHistoryService]
+        PriceHistoryRepository[PriceHistoryRepository]
+        AssetRepository[AssetRepository]
+    end
+
+    subgraph Persistence [Persistence Layer]
+        DB[(MySQL Database)]
+        Trade[(Trade Entity)]
+        UserE[(User Entity)]
+        AssetE[(Asset Entity)]
+        WalletE[(Wallet Entity)]
+        AutoRule[(Automation Rule)]
+        PosE[(Position Entity)]
+    end
+
+    %% Connections
+    User --> AuthController
+    User --> TradeController
+    User --> BasketController
+    User --> AutomationController
+    User --> WalletController
+
+    %% Auth Flow
+    SecurityConfig --> JwtFilter
+    JwtFilter --> JwtUtil
+    AuthController --> JwtUtil
+    AuthController --> UserRepository
+    AuthController --> PasswordEncoder
+
+    %% Trade Flow
+    TradeController --> TradeService
+    TradeService --> TradeRepository
+    TradeService --> PortfolioDTO
+    TradeService --> WalletService
+    TradeService --> AssetRepository
+
+    %% Automation & Indicator Logic
+    AutomationScheduler --> AutomationService
+    AutomationService --> RuleEvaluator
+    AutomationService --> RSIIndicator
+    AutomationService --> EMAIndicator
+    AutomationService --> MarketPriceService
+    RSIIndicator --> PriceHistoryService
+    EMAIndicator --> PriceHistoryService
+    PriceHistoryService --> PriceHistoryRepository
+
+    %% Basket Logic
+    BasketController --> BasketAutomationService
+    BasketAutomationService --> BasketRepository
+    BasketAutomationService --> MarketPriceService
+    BasketAutomationService --> TradeService
+
+    %% Persistence Mapping
+    TradeRepository --> DB
+    UserRepository --> DB
+    AssetRepository --> DB
+    WalletRepository --> DB
+    PriceHistoryRepository --> DB
+    
+    %% Entity relationships
+    TradeRepository -.-> Trade
+    UserRepository -.-> UserE
+    AssetRepository -.-> AssetE
+    WalletRepository -.-> WalletE
