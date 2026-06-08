@@ -51,26 +51,17 @@ public class TradeController {
             .sell(dto);
     }
 
-    @GetMapping(
-        "/transactions/{userId}"
-    )
-    public List<Trade>
-    getTrades(
-        @PathVariable
-        Long userId
-    ){
+    @GetMapping("/transactions/{userId}")
+    public List<Trade> getTrades(@PathVariable Long userId){
         return tradeService.getTrades(userId);
     }
 
     @GetMapping("/portfolio")
     public List<PortfolioDTO> getPortfolio(){
 
-    User user =
-        currentUserService
-            .getCurrentUser();
+    User user = currentUserService.getCurrentUser();
 
-    return tradeService
-        .getPortfolio(user.getId());
+    return tradeService.getPortfolio(user.getId());
 }
 
 }
