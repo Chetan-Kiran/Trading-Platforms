@@ -226,4 +226,47 @@ public BasketValuationDTO getBasketValuation(Long basketId){
         total
     );
 }
+
+    public void addAssetRule(Long basketId, BasketAssetRuleDTO dto){
+        Basket basket =
+            basketRepository
+            .findById(basketId)
+            .orElseThrow(
+                () -> new RuntimeException(
+                    "Basket not found"
+                )
+            );
+
+        Asset asset =
+            assetRepository
+            .findById(dto.getAssetId())
+            .orElseThrow(
+                () -> new RuntimeException(
+                    "Asset not found"
+                )
+            );
+
+        BasketAsset relation =
+            new BasketAsset();
+
+        relation.setBasket(basket);
+
+        relation.setAsset(asset);
+
+        relation.setConditionType(
+            dto.getConditionType()
+        );
+
+        relation.setThreshold(
+            dto.getThreshold()
+        );
+
+        relation.setQuantity(
+            dto.getQuantity()
+        );
+
+        basketAssetRepository.save(
+            relation
+        );
+    }
 }

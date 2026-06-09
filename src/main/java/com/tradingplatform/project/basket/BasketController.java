@@ -7,8 +7,6 @@ import com.tradingplatform.project.entity.Basket;
 import com.tradingplatform.project.market.MarketPriceService;
 import com.tradingplatform.project.market.dto.BasketResponseDTO;
 import com.tradingplatform.project.market.dto.BasketValuationDTO;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -61,4 +59,9 @@ public class BasketController {
         return marketPriceService.getPrice(symbol);
     }
     
+    @PostMapping("/{basketId}/asset-rule")
+    public void addAssetRule(@PathVariable Long basketId,@RequestBody BasketAssetRuleDTO dto){
+    basketService.addAssetRule(basketId,dto);
+
+}
 }

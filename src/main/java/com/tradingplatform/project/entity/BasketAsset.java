@@ -25,7 +25,9 @@ public class BasketAsset {
 
     private double threshold;
 
-    private int quantity;
+    private Integer quantity;
+
+    private Boolean active = true;
 
     // --- Constructors ---
     
@@ -88,5 +90,13 @@ public class BasketAsset {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public boolean isActive() {
+    return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

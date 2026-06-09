@@ -1,5 +1,7 @@
 package com.tradingplatform.project.market.provider;
 
-public class MarketProvider {
-    
+public interface MarketProvider {
+    double getPrice(
+        String symbol
+    );
 }

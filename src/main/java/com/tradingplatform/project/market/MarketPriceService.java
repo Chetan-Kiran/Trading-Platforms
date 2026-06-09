@@ -29,33 +29,20 @@ public class MarketPriceService {
             + "&symbol=" + symbol
             + "&apikey=" + API_KEY;
 
-        ResponseEntity<AlphaResponse>
-            response =
-
+        ResponseEntity<AlphaResponse> response =
             restTemplate.getForEntity(
                 url,
                 AlphaResponse.class
             );
+        AlphaResponse body = response.getBody();
 
-        AlphaResponse body =
-            response.getBody();
-
-        System.out.println(
-            "API RESPONSE : "
-            + body
-        );
+        System.out.println("API RESPONSE : "+ body);
 
         if(body == null){
-
-            throw new RuntimeException(
-                "Empty API response"
-            );
+            throw new RuntimeException("Empty API response");
         }
 
-        if(
-            body.getGlobalQuote()
-            == null
-        ){
+        if(body.getGlobalQuote()== null){
 
             throw new RuntimeException(
                 "No quote returned for symbol: "
@@ -78,4 +65,5 @@ public class MarketPriceService {
 
         return price;
     }
+    
 }
