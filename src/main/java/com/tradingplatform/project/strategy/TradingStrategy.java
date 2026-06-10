@@ -1,5 +1,9 @@
 package com.tradingplatform.project.strategy;
 
-public class TradingStrategy {
-    
+public interface TradingStrategy {
+
+    boolean evaluate(
+        double price,
+        double threshold
+    );
 }

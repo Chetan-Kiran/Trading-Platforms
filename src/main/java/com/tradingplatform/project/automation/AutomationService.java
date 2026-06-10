@@ -12,6 +12,7 @@ import com.tradingplatform.project.entity.Asset;
 
 import com.tradingplatform.project.entity.AutomationRule;
 import com.tradingplatform.project.repository.AutomationRuleRepository;
+import com.tradingplatform.project.strategy.StrategyContext;
 
 @Service
 public class AutomationService {
@@ -26,17 +27,21 @@ public class AutomationService {
 
     private final AssetRepository assetRepository;
 
+    private final StrategyContext strategyContext;
+    
     public AutomationService(
         AutomationRuleRepository repo,
         MarketPriceService market,
         TradeService tradeService,
-        AssetRepository assetRepository
+        AssetRepository assetRepository,
+        StrategyContext strategyContext
     ){
 
         this.repo=repo;
         this.market=market;
         this.tradeService = tradeService;
         this.assetRepository = assetRepository;
+        this.strategyContext = strategyContext;
     }
 
     public AutomationRule save(
@@ -64,12 +69,19 @@ public class AutomationService {
             try{
                 double price =market.getPrice(rule.getSymbol());
 
-                boolean matched =
-                    rule.getConditionType()
-                        .equals("LESS_THAN")
-                    &&
-                    price < rule.getThreshold();
+                // boolean matched =
+                //     rule.getConditionType()
+                //         .equals("LESS_THAN")
+                //     &&
+                //     price < rule.getThreshold();
+                boolean matched =strategyContext.evaluate(
 
+                rule.getStrategy(),
+
+                price,
+
+                rule.getThreshold());
+                
                 if(matched){
                     System.out.println("RULE MATCHED : "+ rule.getSymbol());
 

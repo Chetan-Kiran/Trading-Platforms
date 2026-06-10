@@ -24,6 +24,8 @@ public class AutomationRule {
 
     private boolean active = true;
 
+    private String strategy;
+
     // Default Constructor (Required by JPA)
     public AutomationRule() {
     }
@@ -102,4 +104,12 @@ public class AutomationRule {
     public void setActive(boolean active) {
         this.active = active;
     }
+
+    public String getStrategy() {
+    return strategy;
+}
+
+public void setStrategy(String strategy){
+    this.strategy = strategy;
+}
 }
