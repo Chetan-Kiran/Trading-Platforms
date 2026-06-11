@@ -9,17 +9,20 @@ public class StrategyContext {
     private final BreakoutStrategy breakoutStrategy;
     private final SMAStrategy smaStrategy;
     private final RSIStrategy rsiStrategy;
+    private final EMAStrategy emaStrategy;
 
     public StrategyContext(
         PriceDropStrategy priceDropStrategy,
         BreakoutStrategy breakoutStrategy,
         SMAStrategy smaStrategy,
-        RSIStrategy rsiStrategy
+        RSIStrategy rsiStrategy,
+        EMAStrategy emaStrategy
     ) {
         this.priceDropStrategy = priceDropStrategy;
         this.breakoutStrategy = breakoutStrategy;
         this.smaStrategy = smaStrategy;
         this.rsiStrategy = rsiStrategy;
+        this.emaStrategy = emaStrategy;
     }
 
     public boolean evaluate(String strategy, double price, double threshold) {
@@ -36,7 +39,9 @@ public class StrategyContext {
             case "RSI":
                 // Changed 'value' to 'price' to fix the compilation error
                 return rsiStrategy.evaluate(price, threshold);
-
+            
+            case "EMA":
+                return emaStrategy.evaluate(price, threshold);
             default:
                 throw new RuntimeException("Unknown strategy: " + strategy);
         }
