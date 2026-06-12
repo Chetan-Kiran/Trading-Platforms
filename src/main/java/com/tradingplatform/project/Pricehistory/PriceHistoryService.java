@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import com.tradingplatform.project.repository.PriceHistoryRepository;
 import com.tradingplatform.project.entity.PriceHistory;
 
+import java.util.*;
 
 @Service
 public class PriceHistoryService {
@@ -34,4 +35,19 @@ public class PriceHistoryService {
 
         repo.save(p);
     }
+
+    public List<Double> getPrices(
+    String symbol
+){
+
+    return repo
+        .findTop20BySymbolOrderByTimestampDesc(
+            symbol
+        )
+        .stream()
+        .map(
+            PriceHistory::getPrice
+        )
+        .toList();
+}
 }
