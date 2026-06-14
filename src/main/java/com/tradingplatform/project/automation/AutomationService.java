@@ -31,7 +31,7 @@ public class AutomationService {
 
     private final AssetRepository assetRepository;
 
-    private final StrategyContext strategyContext;
+    // private final StrategyContext strategyContext;
 
     private final RSIIndicator rsiIndicator;
 
@@ -57,7 +57,7 @@ public class AutomationService {
         this.market=market;
         this.tradeService = tradeService;
         this.assetRepository = assetRepository;
-        this.strategyContext = strategyContext;
+        // this.strategyContext = strategyContext;
         this.rsiIndicator = rsiIndicator;
         this.emaIndicator = emaIndicator;
         this.priceHistoryService = priceHistoryService;
