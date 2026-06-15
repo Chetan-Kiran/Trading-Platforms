@@ -10,24 +10,33 @@ public class BacktestResult {
 
     private int trades;
 
+    private int wins;
+
+    private int losses;
+
+    private double winRate;
+
     public BacktestResult(
         double startingCapital,
         double endingCapital,
         double profit,
-        int trades
+        int trades,
+        int wins,
+        int losses,
+        double winRate
     ){
 
-        this.startingCapital =
-            startingCapital;
+        this.startingCapital = startingCapital;
 
-        this.endingCapital =
-            endingCapital;
+        this.endingCapital = endingCapital;
 
-        this.profit =
-            profit;
+        this.profit =profit;
 
-        this.trades =
-            trades;
+        this.trades =trades;
+
+        this.wins = wins;
+        this.losses = losses;
+        this.winRate = winRate;
     }
 
     public double getStartingCapital() {
@@ -44,5 +53,17 @@ public class BacktestResult {
 
     public int getTrades() {
         return trades;
+    }
+
+    public int getWins() {
+        return wins;
+    }
+
+    public int getLosses() {
+        return losses;
+    }
+
+    public double getWinRate() {
+        return winRate;
     }
 }

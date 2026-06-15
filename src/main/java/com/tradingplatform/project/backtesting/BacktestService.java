@@ -10,57 +10,90 @@ import com.tradingplatform.project.backtesting.DTO.BacktestResult;
 public class BacktestService {
 
     public BacktestResult run(
-        List<Double> prices
-    ){
+    List<Double> prices
+){
 
-        double capital =
-            100000;
+    double capital = 100000;
 
-        int shares = 0;
+    int shares = 0;
 
-        int trades = 0;
+    int wins = 0;
+    int losses = 0;
+    int trades = 0;
 
-        for(double price : prices){
+    double buyPrice = 0;
 
-            if(price < 300){
+    for(double price : prices){
 
-                shares++;
+        if(
+            price < 300
+            &&
+            shares == 0
+        ){
 
-                capital -= price;
+            shares = 1;
 
-                trades++;
-            }
+            buyPrice = price;
 
-            else if(
-                price > 320
-                &&
-                shares > 0
-            ){
-
-                shares--;
-
-                capital += price;
-
-                trades++;
-            }
+            capital -= price;
         }
 
-        double endingCapital =
-            capital;
+        else if(
+            price > 320
+            &&
+            shares > 0
+        ){
 
-        double profit =
-            endingCapital
-            - 100000;
+            double sellPrice = price;
 
-        return new BacktestResult(
+            double pnl =
+                sellPrice - buyPrice;
 
-            100000,
+            capital += sellPrice;
 
-            endingCapital,
+            if(pnl > 0){
+                wins++;
+            }
+            else{
+                losses++;
+            }
 
-            profit,
+            trades++;
 
-            trades
-        );
+            shares = 0;
+        }
     }
+
+    double endingCapital =
+        capital;
+
+    double profit =
+        endingCapital - 100000;
+
+    double winRate = 0;
+
+    if(trades > 0){
+
+        winRate =
+            ((double)wins / trades)
+            * 100;
+    }
+
+    return new BacktestResult(
+
+        100000,
+
+        endingCapital,
+
+        profit,
+
+        trades,
+
+        wins,
+
+        losses,
+
+        winRate
+    );
+}
 } 
