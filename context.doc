@@ -524,3 +524,28 @@ Automation System
 ```
 
 That's a strong resume / portfolio project if you keep the architecture clean.
+
+
+What I'd build next
+
+In this order:
+
+1. JWT Request Validation
+2. React Dashboard
+3. WebSocket Live Prices
+4. Real Broker Integration
+
+After React + WebSocket:
+
+Portfolio updates live
+Wallet updates live
+Trades appear live
+Automation status updates live
+
+and the project jumps from:
+
+Backend project
+
+to
+
+Full-stack algorithmic trading platform
