@@ -1,26 +1,40 @@
 package com.tradingplatform.project.automation.dto;
 
+import jakarta.persistence.Column;
+
 public class AutomationRuleDTO {
 
     private Long userId;
     private String symbol;
-    private String conditionType; // e.g., "LESS_THAN", "GREATER_THAN"
-    private double threshold;     // Target price trigger
-    private String actionType;    // e.g., "BUY", "SELL"
+    private String strategy;  // e.g., "PRICE_DROP", "RSI", "EMA"
+    
+    private double threshold; // Target strategy limit / price trigger
     private int quantity;
+
+    @Column(name = "action")
+    private String action;
+
+    @Column(name = "stop_loss")
+    private Double stopLoss;
+
+    @Column(name = "take_profit")
+    private Double takeProfit;
 
     // Default Constructor
     public AutomationRuleDTO() {
     }
 
     // Parameterized Constructor
-    public AutomationRuleDTO(Long userId, String symbol, String conditionType, double threshold, String actionType, int quantity) {
+    public AutomationRuleDTO(Long userId, String symbol, String strategy, String action, 
+                             double threshold, int quantity, Double stopLoss, Double takeProfit) {
         this.userId = userId;
         this.symbol = symbol;
-        this.conditionType = conditionType;
+        this.strategy = strategy;
+        this.action = action;
         this.threshold = threshold;
-        this.actionType = actionType;
         this.quantity = quantity;
+        this.stopLoss = stopLoss;
+        this.takeProfit = takeProfit;
     }
 
     // Getters and Setters
@@ -40,12 +54,20 @@ public class AutomationRuleDTO {
         this.symbol = symbol;
     }
 
-    public String getConditionType() {
-        return conditionType;
+    public String getStrategy() {
+        return strategy;
     }
 
-    public void setConditionType(String conditionType) {
-        this.conditionType = conditionType;
+    public void setStrategy(String strategy) {
+        this.strategy = strategy;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 
     public double getThreshold() {
@@ -56,14 +78,6 @@ public class AutomationRuleDTO {
         this.threshold = threshold;
     }
 
-    public String getActionType() {
-        return actionType;
-    }
-
-    public void setActionType(String actionType) {
-        this.actionType = actionType;
-    }
-
     public int getQuantity() {
         return quantity;
     }
@@ -71,4 +85,20 @@ public class AutomationRuleDTO {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    public Double getStopLoss() {
+    return stopLoss;
+}
+
+public void setStopLoss(Double stopLoss) {
+    this.stopLoss = stopLoss;
+}
+
+public Double getTakeProfit() {
+    return takeProfit;
+}
+
+public void setTakeProfit(Double takeProfit) {
+    this.takeProfit = takeProfit;
+}
 }

@@ -18,7 +18,8 @@ public class AutomationRule {
 
     private double threshold;     // Target price trigger
 
-    private String actionType;    // e.g., "BUY", "SELL"
+    @Column(name = "action")
+    private String action;    // e.g., "BUY", "SELL"
 
     private int quantity;
 
@@ -26,17 +27,23 @@ public class AutomationRule {
 
     private String strategy;
 
+    @Column(name = "stop_loss")
+     Double stopLoss;
+
+    @Column(name = "take_profit")
+    private Double takeProfit;
+
     // Default Constructor (Required by JPA)
     public AutomationRule() {
     }
 
     // Parameterized Constructor
-    public AutomationRule(Long userId, String symbol, String conditionType, double threshold, String actionType, int quantity) {
+    public AutomationRule(Long userId, String symbol, String conditionType, double threshold, String action, int quantity) {
         this.userId = userId;
         this.symbol = symbol;
         this.conditionType = conditionType;
         this.threshold = threshold;
-        this.actionType = actionType;
+        this.action = action;
         this.quantity = quantity;
     }
 
@@ -82,11 +89,11 @@ public class AutomationRule {
     }
 
     public String getActionType() {
-        return actionType;
+        return action;
     }
 
-    public void setActionType(String actionType) {
-        this.actionType = actionType;
+    public void setActionType(String action) {
+        this.action = action;
     }
 
     public int getQuantity() {
@@ -111,5 +118,28 @@ public class AutomationRule {
 
 public void setStrategy(String strategy){
     this.strategy = strategy;
+}
+public Double getStopLoss() {
+    return stopLoss;
+}
+
+public void setStopLoss(Double stopLoss) {
+    this.stopLoss = stopLoss;
+}
+
+public Double getTakeProfit() {
+    return takeProfit;
+}
+
+public void setTakeProfit(Double takeProfit) {
+    this.takeProfit = takeProfit;
+}
+
+public String getAction() {
+    return action;
+}
+
+public void setAction(String action) {
+    this.action = action;
 }
 }

@@ -210,6 +210,53 @@ public class TradeService {
     return tradeRepository
         .save(trade);
 }
+
+public Trade sell(
+    TradeRequestDTO dto,
+    double livePrice
+){
+    User user =
+        userRepository
+            .findById(dto.getUserId())
+            .orElseThrow();
+
+    Asset asset =
+        assetRepository
+            .findById(dto.getAssetId())
+            .orElseThrow();
+
+    int owned =
+        getOwnedQuantity(
+            user.getId(),
+            asset.getSymbol()
+        );
+
+    if(dto.getQuantity() > owned){
+        throw new RuntimeException(
+            "Insufficient holdings. Owned: "
+            + owned
+        );
+    }
+
+    Trade trade = new Trade();
+
+    trade.setUser(user);
+    trade.setAsset(asset);
+    trade.setQuantity(dto.getQuantity());
+    trade.setPrice(livePrice);
+    trade.setType("SELL");
+    trade.setTimestamp(LocalDateTime.now());
+
+    double proceeds =
+        livePrice * dto.getQuantity();
+
+    walletService.credit(
+        user.getId(),
+        proceeds
+    );
+
+    return tradeRepository.save(trade);
+}
     public List<Trade>
     getTrades(
         Long userId

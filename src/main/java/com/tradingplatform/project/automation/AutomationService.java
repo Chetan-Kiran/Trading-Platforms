@@ -17,6 +17,8 @@ import com.tradingplatform.project.indicators.RSIIndicator;
 import com.tradingplatform.project.repository.AutomationRuleRepository;
 import com.tradingplatform.project.strategy.RuleEvaluator;
 import com.tradingplatform.project.strategy.StrategyContext;
+import com.tradingplatform.project.entity.Position;
+import com.tradingplatform.project.repository.PositionRepository;
 
 @Service
 public class AutomationService {
@@ -41,6 +43,8 @@ public class AutomationService {
 
     private final RuleEvaluator ruleEvaluator;
     
+    private final PositionRepository positionRepository;
+    
     public AutomationService(
         AutomationRuleRepository repo,
         MarketPriceService market,
@@ -50,7 +54,8 @@ public class AutomationService {
         RSIIndicator rsiIndicator,
         EMAIndicator emaIndicator,
         PriceHistoryService priceHistoryService,
-        RuleEvaluator ruleEvaluator
+        RuleEvaluator ruleEvaluator,
+        PositionRepository positionRepository
     ){
 
         this.repo=repo;
@@ -62,6 +67,7 @@ public class AutomationService {
         this.emaIndicator = emaIndicator;
         this.priceHistoryService = priceHistoryService;
         this.ruleEvaluator = ruleEvaluator;
+        this.positionRepository = positionRepository;
     }
 
     public AutomationRule save(
@@ -204,18 +210,50 @@ public class AutomationService {
 
                     dto.setQuantity(rule.getQuantity());
 
-                    tradeService.buy(dto, price);
+                    if("BUY".equals(rule.getAction())){
+
+    tradeService.buy(dto, price);
+
+    Position position = new Position();
+
+    position.setUserId(rule.getUserId());
+
+    position.setSymbol(rule.getSymbol());
+
+    position.setQuantity(rule.getQuantity());
+
+    position.setEntryPrice(price);
+
+    position.setStopLoss(rule.getStopLoss());
+
+    position.setTakeProfit(rule.getTakeProfit());
+
+    positionRepository.save(position);
+
+    System.out.println(
+        "AUTO BUY EXECUTED : "
+        + rule.getSymbol()
+    );
+}
+else if("SELL".equals(rule.getAction())){
+
+    tradeService.sell(dto, price);
+
+    System.out.println(
+        "AUTO SELL EXECUTED : "
+        + rule.getSymbol()
+    );
+}
+
                     rule.setActive(false);
-                    repo.save(rule);
 
-                    System.out.println(
-                        "AUTO BUY EXECUTED : "
-                        + rule.getSymbol()
-                    );
+repo.save(rule);
 
-                    result.append("AUTO BUY EXECUTED : ")
-                        .append(rule.getSymbol())
-                        .append("\n");
+result.append("AUTO ")
+    .append(rule.getAction())
+    .append(" EXECUTED : ")
+    .append(rule.getSymbol())
+    .append("\n");
                 }
             }
             catch(Exception e){
