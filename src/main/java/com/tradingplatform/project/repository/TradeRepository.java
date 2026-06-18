@@ -9,6 +9,6 @@ import com.tradingplatform.project.entity.Trade;
 public interface TradeRepository
 extends JpaRepository<Trade,Long>{
 
-    List<Trade> findByUserId(Long userId);
+    List<Trade> findByUserIdOrderByTimestampAsc(Long userId);
 
 }

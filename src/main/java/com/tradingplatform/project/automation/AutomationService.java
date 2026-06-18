@@ -245,7 +245,7 @@ else if("SELL".equals(rule.getAction())){
     );
 }
 
-                    rule.setActive(false);
+        rule.setActive(false);
 
 repo.save(rule);
 

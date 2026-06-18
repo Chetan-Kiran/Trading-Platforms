@@ -10,6 +10,7 @@ import com.tradingplatform.project.repository.BasketAssetRepository;
 import com.tradingplatform.project.repository.BasketRepository;
 import com.tradingplatform.project.market.MarketPriceService;
 import com.tradingplatform.project.trade.TradeService;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BasketAutomationService {
@@ -27,11 +28,13 @@ public class BasketAutomationService {
         this.marketPriceService = marketPriceService;
         this.tradeService = tradeService;
     }
+
+    @Transactional
     public void executeBasket(Long basketId){
 
     Basket basket =
         basketRepository
-            .findById(basketId)
+            .findByIdWithAssets(basketId)
             .orElseThrow();
 
     for(BasketAsset ba : basket.getAssets()){

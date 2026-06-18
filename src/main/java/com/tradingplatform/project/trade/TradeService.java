@@ -189,9 +189,7 @@ public class TradeService {
         dto.getQuantity()
     );
 
-    trade.setPrice(
-        livePrice
-    );
+    trade.setPrice(livePrice);
 
     trade.setType(
         "SELL"
@@ -207,14 +205,13 @@ public class TradeService {
 
     walletService.credit(user.getId(),proceeds);
 
-    return tradeRepository
-        .save(trade);
+    return tradeRepository.save(trade);
 }
 
-public Trade sell(
-    TradeRequestDTO dto,
-    double livePrice
-){
+public Trade sell(TradeRequestDTO dto,double livePrice){
+    
+    
+
     User user =
         userRepository
             .findById(dto.getUserId())
@@ -263,18 +260,17 @@ public Trade sell(
     ){
 
         return tradeRepository
-            .findByUserId(
+            .findByUserIdOrderByTimestampAsc(
                 userId
             );
     }
 
-    public List<PortfolioDTO>
-getPortfolio(Long userId){
+    public List<PortfolioDTO> getPortfolio(Long userId){
 
     List<Trade> trades =
 
         tradeRepository
-            .findByUserId(
+            .findByUserIdOrderByTimestampAsc(
                 userId
             );
 
@@ -286,6 +282,21 @@ getPortfolio(Long userId){
 
     Map<String,Double> realizedMap =
         new HashMap<>();
+
+        System.out.println("TRADES");
+
+for(Trade t : trades){
+
+    System.out.println(
+        t.getAsset().getSymbol()
+        + " "
+        + t.getType()
+        + " "
+        + t.getQuantity()
+        + " "
+        + t.getPrice()
+    );
+}
 
     for(
         Trade trade : trades
@@ -461,7 +472,14 @@ getPortfolio(Long userId){
             )
         );
     }
+    System.out.println("QTY MAP");
+System.out.println(qtyMap);
 
+System.out.println("COST MAP");
+System.out.println(costMap);
+
+System.out.println("REALIZED MAP");
+System.out.println(realizedMap);
     return result;
 }
 
@@ -475,7 +493,7 @@ getPortfolio(Long userId){
     List<Trade> trades =
 
         tradeRepository
-            .findByUserId(userId);
+            .findByUserIdOrderByTimestampAsc(userId);
 
     int owned = 0;
 

@@ -29,11 +29,11 @@ public class PortfolioDTO {
         this.unrealizedPnl = unrealizedPnl;
     }
 
-    public double getrealizedPnl(){
+    public double getRealizedPnl(){
         return realizedPnl;
     }
 
-    public double getunrealizedPnl(){
+    public double getUnrealizedPnl(){
         return unrealizedPnl;
     }
     
