@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.web.bind.annotation.*;
 
 import com.tradingplatform.project.entity.Trade;
+import com.tradingplatform.project.entity.User;
+import com.tradingplatform.project.auth.CurrentUserService;
 import com.tradingplatform.project.trade.dto.PortfolioDTO;
 import com.tradingplatform.project.trade.dto.TradeRequestDTO;
 
@@ -15,12 +17,18 @@ public class TradeController {
     private final
     TradeService tradeService;
 
+    private final
+    CurrentUserService currentUserService;
+
     public TradeController(
-        TradeService tradeService
+        TradeService tradeService,
+        CurrentUserService currentUserService
     ){
 
         this.tradeService=
             tradeService;
+        this.currentUserService =
+            currentUserService;
     }
 
     @PostMapping("/buy")
@@ -54,10 +62,15 @@ public class TradeController {
         return tradeService.getTrades(userId);
     }
 
-    @GetMapping("/portfolio/{userId}")
-    public List<PortfolioDTO> portfolio(@PathVariable Long userId){
+    @GetMapping("/portfolio")
+    public List<PortfolioDTO> getPortfolio(){
 
-        return tradeService.getPortfolio(userId);
-    }
+    User user =
+        currentUserService
+            .getCurrentUser();
+
+    return tradeService
+        .getPortfolio(user.getId());
+}
 
 }
